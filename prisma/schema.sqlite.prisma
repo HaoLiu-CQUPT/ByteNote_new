@@ -1,0 +1,75 @@
+// 本地开发环境使用的 SQLite schema
+// 使用方法：将 schema.sqlite.prisma 复制为 schema.prisma 以在本地使用 SQLite
+// 注意：Vercel 部署必须使用 PostgreSQL，请使用主 schema.prisma 文件
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  name      String
+  password  String
+  notes     Note[]
+  categories Category[]
+  tags       Tag[]
+  createdAt DateTime @default(now())
+}
+
+model Category {
+  id        Int      @id @default(autoincrement())
+  name      String
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int
+  notes     Note[]
+  createdAt DateTime @default(now())
+}
+
+model Tag {
+  id        Int      @id @default(autoincrement())
+  name      String
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int
+  notes     NoteTag[]
+  createdAt DateTime @default(now())
+}
+
+model Note {
+  id          Int       @id @default(autoincrement())
+  title       String
+  content     String
+  summary     String?   // AI 生成的摘要
+  user        User      @relation(fields: [userId], references: [id])
+  userId      Int
+  category    Category? @relation(fields: [categoryId], references: [id])
+  categoryId  Int?
+  tags        NoteTag[]
+  embedding   NoteEmbedding?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model NoteTag {
+  note   Note @relation(fields: [noteId], references: [id])
+  noteId Int
+  tag    Tag  @relation(fields: [tagId], references: [id])
+  tagId  Int
+
+  @@id([noteId, tagId])
+}
+
+model NoteEmbedding {
+  id        Int      @id @default(autoincrement())
+  note      Note     @relation(fields: [noteId], references: [id], onDelete: Cascade)
+  noteId    Int      @unique
+  embedding String   // JSON 字符串存储向量数组
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+

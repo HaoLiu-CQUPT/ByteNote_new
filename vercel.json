@@ -1,11 +1,8 @@
 {
-  "buildCommand": "npm run build",
+  "buildCommand": "prisma generate && prisma migrate deploy && next build",
   "devCommand": "npm run dev",
   "installCommand": "npm install",
   "framework": "nextjs",
-  "regions": ["hkg1"],
-  "env": {
-    "JWT_SECRET": "@jwt_secret"
-  }
+  "regions": ["hkg1"]
 }
 
