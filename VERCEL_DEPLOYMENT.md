@@ -109,14 +109,55 @@ git push
 
 ### 第四步：配置 Vercel Postgres 数据库
 
-#### 4.1 创建 Postgres 数据库
+**重要说明**：Vercel Postgres 数据库可以在项目部署前或部署后创建。有两种方式：
 
-1. 在项目配置页面，找到 "Storage" 或 "Databases" 部分
-2. 点击 "Create Database" 或 "Add Database"
-3. 选择 "Postgres"
-4. 选择区域（建议选择 `Hong Kong (hkg1)` 或离你最近的区域）
-5. 点击 "Create"
-6. 等待数据库创建完成（通常需要 1-2 分钟）
+#### 方式 A：在项目部署前创建（推荐）
+
+1. **先完成项目的基础配置**（但不要点击 Deploy）
+2. **在项目配置页面**，向下滚动找到 **"Storage"** 或 **"Add Storage"** 部分
+   - 如果看不到，可能需要在项目部署后才能添加
+   - 如果看到，点击 **"Create Database"** 或 **"Add"**
+3. **选择数据库类型**：
+   - 选择 **"Postgres"** 或 **"Vercel Postgres"**
+4. **配置数据库**：
+   - 输入数据库名称（可选，默认会自动生成）
+   - 选择区域（建议选择 `Hong Kong (hkg1)` 或离你最近的区域）
+5. **点击 "Create"**
+6. **等待数据库创建完成**（通常需要 1-2 分钟）
+
+#### 方式 B：在项目部署后创建（如果方式 A 找不到）
+
+1. **先完成项目部署**（即使没有数据库，也可以先部署）
+2. **进入项目 Dashboard**：
+   - 在 Vercel 首页，点击你的项目名称
+   - 或者访问：`https://vercel.com/你的用户名/你的项目名`
+3. **进入 Storage 标签**：
+   - 在项目页面顶部，点击 **"Storage"** 标签
+   - 或者点击左侧菜单中的 **"Storage"**
+4. **创建数据库**：
+   - 点击 **"Create Database"** 或 **"Add Database"** 按钮
+   - 选择 **"Postgres"** 或 **"Vercel Postgres"**
+   - 选择区域（建议：`Hong Kong (hkg1)`）
+   - 点击 **"Create"**
+5. **等待创建完成**
+
+#### 如果仍然找不到 Storage 选项
+
+如果以上两种方式都找不到，可以尝试：
+
+1. **检查 Vercel 账号类型**：
+   - Vercel Postgres 可能需要 Pro 计划（但通常免费计划也支持）
+   - 确认你的账号可以创建数据库
+
+2. **使用外部数据库服务**（备选方案）：
+   - 使用 [Supabase](https://supabase.com)（免费 PostgreSQL）
+   - 使用 [Neon](https://neon.tech)（免费 PostgreSQL）
+   - 使用 [Railway](https://railway.app)（免费 PostgreSQL）
+   - 获取连接字符串后，在环境变量中设置 `DATABASE_URL`
+
+3. **查看 Vercel 文档**：
+   - 访问 [Vercel Postgres 文档](https://vercel.com/docs/storage/vercel-postgres)
+   - 界面可能已更新，查看最新说明
 
 #### 4.2 获取数据库连接字符串
 
@@ -127,13 +168,100 @@ git push
 
 **重要**：Prisma 需要使用 `POSTGRES_PRISMA_URL`，但我们需要将其映射为 `DATABASE_URL`。
 
+#### 4.3 详细导航路径（如果找不到）
+
+**在项目导入/配置页面**：
+1. 导入 GitHub 仓库后，会进入项目配置页面
+2. 向下滚动，查找以下任一选项：
+   - **"Storage"** 部分（通常在页面中间或底部）
+   - **"Add Storage"** 按钮
+   - **"Databases"** 标签
+   - **"Create Database"** 按钮
+
+**在项目 Dashboard 中**（部署后）：
+1. 登录 Vercel Dashboard：`https://vercel.com/dashboard`
+2. 点击你的项目名称
+3. 在项目页面顶部，你会看到多个标签：
+   - **Overview**（概览）
+   - **Deployments**（部署）
+   - **Settings**（设置）
+   - **Storage**（存储）← **点击这里**
+4. 点击 **"Storage"** 标签
+5. 点击 **"Create Database"** 或 **"Add Database"** 按钮
+6. 选择 **"Postgres"**
+
+**如果 Storage 标签不存在**：
+- 可能是 Vercel 界面更新，尝试在 **Settings** → **Storage** 中查找
+- 或者使用外部数据库服务（见下方备选方案）
+
+#### 4.4 使用外部数据库服务（如果找不到 Vercel Postgres）
+
+如果确实找不到 Vercel Postgres 选项，可以使用以下免费 PostgreSQL 服务：
+
+**方案 1：使用 Supabase（推荐，最简单）**
+
+1. 访问 [Supabase](https://supabase.com) 并注册账号
+2. 创建新项目：
+   - 点击 "New Project"
+   - 输入项目名称
+   - 设置数据库密码（记住这个密码）
+   - 选择区域（建议选择离你最近的）
+   - 点击 "Create new project"
+3. 等待项目创建完成（约 2 分钟）
+4. 获取连接字符串：
+   - 在项目 Dashboard，点击左侧 **"Settings"** → **"Database"**
+   - 找到 **"Connection string"** 部分
+   - 选择 **"URI"** 标签
+   - 复制连接字符串（格式类似：`postgresql://postgres:[YOUR-PASSWORD]@db.xxx.supabase.co:5432/postgres`）
+   - **重要**：将 `[YOUR-PASSWORD]` 替换为你创建项目时设置的密码
+5. 在 Vercel 环境变量中设置：
+   - 变量名：`DATABASE_URL`
+   - 变量值：粘贴刚才复制的连接字符串（已替换密码）
+
+**方案 2：使用 Neon（推荐，专为 Serverless 优化）**
+
+1. 访问 [Neon](https://neon.tech) 并注册账号
+2. 创建新项目：
+   - 点击 "Create a project"
+   - 输入项目名称
+   - 选择区域
+   - 点击 "Create Project"
+3. 获取连接字符串：
+   - 在项目 Dashboard，找到 **"Connection Details"**
+   - 复制 **"Connection string"**（格式类似：`postgresql://user:password@ep-xxx.region.aws.neon.tech/dbname?sslmode=require`）
+4. 在 Vercel 环境变量中设置 `DATABASE_URL`
+
+**方案 3：使用 Railway**
+
+1. 访问 [Railway](https://railway.app) 并注册账号
+2. 创建新项目 → 选择 "New" → "Database" → "Add PostgreSQL"
+3. 等待数据库创建完成
+4. 点击数据库 → "Variables" → 复制 `DATABASE_URL`
+5. 在 Vercel 环境变量中设置 `DATABASE_URL`
+
+**使用外部数据库后的注意事项**：
+
+- 不需要设置 `POSTGRES_PRISMA_URL`，直接使用 `DATABASE_URL`
+- 确保连接字符串格式正确（以 `postgresql://` 开头）
+- 某些服务可能需要启用 SSL，连接字符串中通常已包含 `?sslmode=require`
+
 ---
 
 ### 第五步：配置环境变量
 
+**重要**：如果部署时出现 `DATABASE_URL` 未找到的错误，请查看 [VERCEL_FIX_DATABASE_URL.md](./VERCEL_FIX_DATABASE_URL.md) 获取详细的解决步骤。
+
 #### 5.1 添加环境变量
 
-在项目配置页面的 "Environment Variables" 部分，添加以下变量：
+**导航路径**：
+1. 进入项目 Dashboard：访问 [Vercel Dashboard](https://vercel.com/dashboard) → 点击你的项目名称
+2. 进入 Settings：点击顶部标签栏的 **"Settings"**
+3. 进入环境变量设置：在左侧菜单，点击 **"Environment Variables"**
+
+**或者**，如果还在项目配置页面（导入项目时）：
+- 向下滚动，找到 **"Environment Variables"** 部分
+
+在环境变量设置页面，添加以下变量：
 
 | 变量名 | 值 | 说明 |
 |--------|-----|------|
@@ -164,11 +292,23 @@ JWT_SECRET=a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0u1v2w3x4y5z6a7b8c9d0e1f2
 $POSTGRES_PRISMA_URL
 ```
 
-或者直接使用 Vercel 提供的 `POSTGRES_PRISMA_URL` 的值（点击 "Show" 查看）。
+**详细步骤**：
+1. 在 Environment Variables 页面，点击 **"Add New"** 或 **"Add"** 按钮
+2. **Key（变量名）**：输入 `DATABASE_URL`
+3. **Value（变量值）**：输入 `$POSTGRES_PRISMA_URL`
+   - **注意**：直接输入 `$POSTGRES_PRISMA_URL`，Vercel 会自动解析这个引用
+   - 不要输入实际的连接字符串，使用 `$` 符号引用 Vercel Postgres 自动创建的变量
+4. **Environment（环境）**：**重要** - 选择所有环境：
+   - ✅ Production（生产环境）
+   - ✅ Preview（预览环境）
+   - ✅ Development（开发环境）
+5. 点击 **"Save"** 或 **"Add"**
 
-**注意**：
-- 如果 Vercel 自动创建了 `POSTGRES_PRISMA_URL`，你可以直接使用它
-- 或者手动添加 `DATABASE_URL`，值为 `$POSTGRES_PRISMA_URL`（Vercel 会自动解析）
+**如果使用外部数据库**（如 Supabase、Neon）：
+- Value 应该是完整的连接字符串，例如：
+  ```
+  postgresql://user:password@host:5432/database?sslmode=require
+  ```
 
 #### 5.4 配置 MODELSCOPE_API_KEY（可选）
 
