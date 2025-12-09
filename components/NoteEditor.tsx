@@ -7,21 +7,12 @@ import { isOnline, saveOfflineNote, addToSyncQueue } from "@/lib/offline";
 export type Option = { id: number; name: string };
 
    // 使用 Next.js dynamic 导入 react-markdown，添加错误处理
-   const ReactMarkdown = dynamic(
-     () => import("react-markdown").then((mod) => mod.default).catch((err) => {
-       console.error("Failed to load react-markdown:", err);
-       // 返回一个降级组件
-       return ({ children }: { children: React.ReactNode }) => (
-         <div className="markdown-preview">
-           <pre className="whitespace-pre-wrap text-sm">{String(children)}</pre>
-         </div>
-       );
-     }),
-     {
-       ssr: false,
-       loading: () => <div className="text-xs text-gray-500 p-2">加载预览中...</div>
-     }
-   );
+    // 使用 Next.js dynamic 导入 react-markdown
+   // @ts-ignore - react-markdown 类型定义问题
+   const ReactMarkdown = dynamic(() => import("react-markdown"), {
+     ssr: false,
+     loading: () => <div className="text-xs text-gray-500 p-2">加载预览中...</div>
+   }) as any;
 
 const AUTO_SAVE_DELAY = 800;
 
@@ -693,5 +684,6 @@ export default function NoteEditor({
     </div>
   );
 }
+
 
 
