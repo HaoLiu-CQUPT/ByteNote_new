@@ -6,36 +6,11 @@ import { isOnline, saveOfflineNote, addToSyncQueue } from "@/lib/offline";
 
 export type Option = { id: number; name: string };
 
-// 1. 先添加必要的导入（如果没有的话）
-import type { ReactNode } from 'react';
-import type { Options } from 'react-markdown'; // 新增：导入react-markdown的类型
-
-// 2. 修复后的动态导入代码（核心修改部分）
-const ReactMarkdown = dynamic<Options>( // 新增：显式指定Props类型为Options
-  () => 
-    import("react-markdown")
-      .then((mod) => mod.default)
-      .catch((err) => {
-        console.error("Failed to load react-markdown:", err);
-        // 关键修改：降级组件的参数类型从 { children: ReactNode } 改为 Options
-        return ({ children, ...rest }: Options) => {
-          // 过滤掉 null 值，只保留 HTML 元素允许的属性
-          const htmlProps = Object.fromEntries(
-            Object.entries(rest).filter(([_, value]) => value !== null)
-          ) as React.HTMLAttributes<HTMLDivElement>;
-          
-          return (
-            <div {...htmlProps} style={{ whiteSpace: 'pre-wrap' }}>
-              {children || '加载markdown失败，请刷新重试'}
-            </div>
-          );
-        };
-      }),
-  {
-    ssr: false, // 可选：根据需要设置，非必须但建议加
-    loading: () => <div>加载中...</div> // 可选：加载状态，非必须
-  }
-);
+// 简化版动态导入：移除错误处理，避免类型不匹配
+const ReactMarkdown = dynamic(() => import("react-markdown"), {
+  ssr: false,
+  loading: () => <div className="text-xs text-gray-500 p-2">加载预览中...</div>
+});
 
 const AUTO_SAVE_DELAY = 800;
 
@@ -707,3 +682,6 @@ export default function NoteEditor({
     </div>
   );
 }
+
+
+
