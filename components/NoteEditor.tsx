@@ -13,7 +13,7 @@ const ReactMarkdown = dynamic(
     ssr: false,
     loading: () => <div className="text-xs text-gray-500 p-2">加载预览中...</div>
   }
-) as any;
+);
 
 const AUTO_SAVE_DELAY = 800;
 
