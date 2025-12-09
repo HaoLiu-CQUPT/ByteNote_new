@@ -6,17 +6,9 @@ import { isOnline, saveOfflineNote, addToSyncQueue } from "@/lib/offline";
 
 export type Option = { id: number; name: string };
 
-// 使用 Next.js dynamic 导入 react-markdown，添加错误处理
+// 使用 Next.js dynamic 导入 react-markdown
 const ReactMarkdown = dynamic(
-  () => import("react-markdown").then((mod) => mod.default).catch((err) => {
-    console.error("Failed to load react-markdown:", err);
-    // 返回一个降级组件
-    return ({ children }: { children: React.ReactNode }) => (
-      <div className="markdown-preview">
-        <pre className="whitespace-pre-wrap text-sm">{String(children)}</pre>
-      </div>
-    );
-  }),
+  () => import("react-markdown"),
   {
     ssr: false,
     loading: () => <div className="text-xs text-gray-500 p-2">加载预览中...</div>
@@ -231,12 +223,18 @@ export default function NoteEditor({
         const offlineId = saveOfflineNote({
           ...noteData,
           id: initialTitle ? Number(window.location.pathname.split("/").pop()) : undefined,
-          isNew: !initialTitle
+          isNew: !initialTitle,
+          timestamp: Date.now()
         });
         addToSyncQueue({
           type: initialTitle ? "update" : "create",
           noteId: initialTitle ? Number(window.location.pathname.split("/").pop()) : undefined,
-          data: { ...noteData, id: offlineId, isNew: !initialTitle },
+          data: { 
+            ...noteData, 
+            id: initialTitle ? Number(window.location.pathname.split("/").pop()) : (isNaN(Number(offlineId)) ? undefined : Number(offlineId)), 
+            isNew: !initialTitle,
+            timestamp: Date.now()
+          },
           timestamp: Date.now()
         });
         setErr("已保存到本地，网络恢复后将自动同步");
@@ -255,12 +253,18 @@ export default function NoteEditor({
         const offlineId = saveOfflineNote({
           ...noteData,
           id: initialTitle ? Number(window.location.pathname.split("/").pop()) : undefined,
-          isNew: !initialTitle
+          isNew: !initialTitle,
+          timestamp: Date.now()
         });
         addToSyncQueue({
           type: initialTitle ? "update" : "create",
           noteId: initialTitle ? Number(window.location.pathname.split("/").pop()) : undefined,
-          data: { ...noteData, id: offlineId, isNew: !initialTitle },
+          data: { 
+            ...noteData, 
+            id: initialTitle ? Number(window.location.pathname.split("/").pop()) : (isNaN(Number(offlineId)) ? undefined : Number(offlineId)), 
+            isNew: !initialTitle,
+            timestamp: Date.now()
+          },
           timestamp: Date.now()
         });
         setErr("已保存到本地，网络恢复后将自动同步");
@@ -371,8 +375,8 @@ export default function NoteEditor({
   };
 
   // 简单的 Markdown 预览（离线降级方案）
-  const renderMarkdownPreview = (text: string) => {
-    if (!text) return "这里会实时渲染 Markdown 内容...";
+  const renderMarkdownPreview = (text: string): { __html: string } => {
+    if (!text) return { __html: "这里会实时渲染 Markdown 内容..." };
     
     // 简单的 Markdown 渲染（离线时使用）
     let html = text

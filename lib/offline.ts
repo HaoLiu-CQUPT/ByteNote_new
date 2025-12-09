@@ -27,7 +27,7 @@ function isBrowser(): boolean {
 // Save note to offline storage
 export function saveOfflineNote(note: OfflineNote): string {
   if (!isBrowser()) return "";
-  const id = note.id || `temp_${Date.now()}`;
+  const id = note.id ? String(note.id) : `temp_${Date.now()}`;
   const key = `${OFFLINE_PREFIX}${id}`;
   localStorage.setItem(key, JSON.stringify({ ...note, id, timestamp: Date.now() }));
   return id;
