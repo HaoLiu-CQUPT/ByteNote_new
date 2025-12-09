@@ -250,10 +250,32 @@ Vercel 会自动执行以下步骤：
 1. 点击部署记录可以查看详细日志
 2. 如果部署失败，查看错误信息
 3. 常见问题：
+   - **部署被取消（Ignored Build Step）** → 见下方解决方案
    - 环境变量未配置 → 检查环境变量设置
    - 数据库连接失败 → 检查 `DATABASE_URL` 是否正确
    - Prisma 迁移失败 → 检查数据库是否已创建
    - 构建错误 → 查看构建日志中的具体错误
+
+### 6.4 如果部署被取消（Ignored Build Step）
+
+**错误信息**：
+```
+The Deployment has been canceled as a result of running the command defined in the "Ignored Build Step" setting.
+```
+
+**原因**：
+- `vercel.json` 中的 `ignoreCommand` 配置导致部署被跳过
+- 这通常发生在首次部署或 schema 文件没有变化时
+
+**解决方案**：
+1. 已修复：`vercel.json` 中的 `ignoreCommand` 已被移除
+2. 提交更改并推送：
+   ```bash
+   git add vercel.json
+   git commit -m "修复: 移除 ignoreCommand 以允许部署"
+   git push origin main
+   ```
+3. Vercel 会自动重新部署，这次应该会成功
 
 ---
 
