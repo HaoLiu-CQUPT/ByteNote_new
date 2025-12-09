@@ -8,12 +8,12 @@ export type Option = { id: number; name: string };
 
 // 使用 Next.js dynamic 导入 react-markdown
 const ReactMarkdown = dynamic(
-  () => import("react-markdown"),
+  () => import("react-markdown").then((mod) => mod.default),
   {
     ssr: false,
     loading: () => <div className="text-xs text-gray-500 p-2">加载预览中...</div>
   }
-);
+) as any;
 
 const AUTO_SAVE_DELAY = 800;
 
@@ -638,23 +638,23 @@ export default function NoteEditor({
               <div className="markdown-preview [&_h1]:text-2xl [&_h1]:font-bold [&_h1]:mt-4 [&_h1]:mb-2 [&_h1]:text-gray-900 dark:[&_h1]:text-slate-100 [&_h2]:text-xl [&_h2]:font-bold [&_h2]:mt-3 [&_h2]:mb-2 [&_h2]:text-gray-800 dark:[&_h2]:text-slate-200 [&_h3]:text-lg [&_h3]:font-bold [&_h3]:mt-2 [&_h3]:mb-1 [&_h3]:text-gray-700 dark:[&_h3]:text-slate-300 [&_p]:mb-2 [&_ul]:list-disc [&_ul]:pl-6 [&_ul]:mb-2 [&_ol]:list-decimal [&_ol]:pl-6 [&_ol]:mb-2 [&_li]:mb-1 [&_code]:bg-gray-200 dark:[&_code]:bg-slate-800 [&_code]:px-1 [&_code]:py-0.5 [&_code]:rounded [&_code]:text-xs [&_code]:font-mono [&_pre]:bg-gray-200 dark:[&_pre]:bg-slate-800 [&_pre]:p-2 [&_pre]:rounded [&_pre]:text-xs [&_pre]:font-mono [&_pre]:overflow-x-auto [&_pre]:my-2 [&_blockquote]:border-l-4 [&_blockquote]:border-gray-300 dark:[&_blockquote]:border-slate-600 [&_blockquote]:pl-4 [&_blockquote]:italic [&_blockquote]:my-2 [&_a]:text-blue-600 dark:[&_a]:text-sky-400 [&_a]:hover:underline [&_strong]:font-bold [&_em]:italic">
                 <ReactMarkdown
                   components={{
-                    h1: ({node, ...props}) => <h1 className="text-2xl font-bold mt-4 mb-2 text-gray-900 dark:text-slate-100" {...props} />,
-                    h2: ({node, ...props}) => <h2 className="text-xl font-bold mt-3 mb-2 text-gray-800 dark:text-slate-200" {...props} />,
-                    h3: ({node, ...props}) => <h3 className="text-lg font-bold mt-2 mb-1 text-gray-700 dark:text-slate-300" {...props} />,
-                    p: ({node, ...props}) => <p className="mb-2" {...props} />,
-                    ul: ({node, ...props}) => <ul className="list-disc pl-6 mb-2" {...props} />,
-                    ol: ({node, ...props}) => <ol className="list-decimal pl-6 mb-2" {...props} />,
-                    li: ({node, ...props}) => <li className="mb-1" {...props} />,
+                    h1: ({node, ...props}: any) => <h1 className="text-2xl font-bold mt-4 mb-2 text-gray-900 dark:text-slate-100" {...props} />,
+                    h2: ({node, ...props}: any) => <h2 className="text-xl font-bold mt-3 mb-2 text-gray-800 dark:text-slate-200" {...props} />,
+                    h3: ({node, ...props}: any) => <h3 className="text-lg font-bold mt-2 mb-1 text-gray-700 dark:text-slate-300" {...props} />,
+                    p: ({node, ...props}: any) => <p className="mb-2" {...props} />,
+                    ul: ({node, ...props}: any) => <ul className="list-disc pl-6 mb-2" {...props} />,
+                    ol: ({node, ...props}: any) => <ol className="list-decimal pl-6 mb-2" {...props} />,
+                    li: ({node, ...props}: any) => <li className="mb-1" {...props} />,
                     code: ({node, inline, ...props}: any) => 
                       inline ? (
                         <code className="bg-gray-200 dark:bg-slate-800 px-1 py-0.5 rounded text-xs font-mono" {...props} />
                       ) : (
                         <code className="block bg-gray-200 dark:bg-slate-800 p-2 rounded text-xs font-mono overflow-x-auto" {...props} />
                       ),
-                    blockquote: ({node, ...props}) => <blockquote className="border-l-4 border-gray-300 dark:border-slate-600 pl-4 italic my-2" {...props} />,
-                    a: ({node, ...props}) => <a className="text-blue-600 dark:text-sky-400 hover:underline" {...props} />,
-                    strong: ({node, ...props}) => <strong className="font-bold" {...props} />,
-                    em: ({node, ...props}) => <em className="italic" {...props} />,
+                    blockquote: ({node, ...props}: any) => <blockquote className="border-l-4 border-gray-300 dark:border-slate-600 pl-4 italic my-2" {...props} />,
+                    a: ({node, ...props}: any) => <a className="text-blue-600 dark:text-sky-400 hover:underline" {...props} />,
+                    strong: ({node, ...props}: any) => <strong className="font-bold" {...props} />,
+                    em: ({node, ...props}: any) => <em className="italic" {...props} />,
                   }}
                 >
                   {content || "这里会实时渲染 Markdown 内容..."}
