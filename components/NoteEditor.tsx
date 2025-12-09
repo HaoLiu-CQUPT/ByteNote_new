@@ -6,11 +6,12 @@ import { isOnline, saveOfflineNote, addToSyncQueue } from "@/lib/offline";
 
 export type Option = { id: number; name: string };
 
-// 使用 Next.js dynamic 导入 react-markdown
-const ReactMarkdown = dynamic(() => import("react-markdown"), {
-  ssr: false,
-  loading: () => <div className="text-xs text-gray-500 p-2">加载预览中...</div>
-});
+   // 使用 Next.js dynamic 导入 react-markdown
+   // @ts-ignore - react-markdown 类型定义问题
+   const ReactMarkdown = dynamic(() => import("react-markdown"), {
+     ssr: false,
+     loading: () => <div className="text-xs text-gray-500 p-2">加载预览中...</div>
+   }) as any;
 
 const AUTO_SAVE_DELAY = 800;
 
@@ -682,3 +683,4 @@ export default function NoteEditor({
     </div>
   );
 }
+
