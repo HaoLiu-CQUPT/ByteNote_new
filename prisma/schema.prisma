@@ -1,9 +1,13 @@
+// 本地开发环境使用的 SQLite schema
+// 使用方法：将 schema.sqlite.prisma 复制为 schema.prisma 以在本地使用 SQLite
+// 注意：Vercel 部署必须使用 PostgreSQL，请使用主 schema.prisma 文件
+
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "sqlite"
   url      = env("DATABASE_URL")
 }
 
@@ -68,8 +72,5 @@ model NoteEmbedding {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
-
-
-
 
 
