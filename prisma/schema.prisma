@@ -1,13 +1,13 @@
-// 本地开发环境使用的 SQLite schema
-// 使用方法：将 schema.sqlite.prisma 复制为 schema.prisma 以在本地使用 SQLite
-// 注意：Vercel 部署必须使用 PostgreSQL，请使用主 schema.prisma 文件
+// 生产环境使用 PostgreSQL（Vercel 部署）
+// 本地开发环境可以使用 SQLite，通过 DATABASE_URL 环境变量切换
+// 本地开发时，在 .env 文件中设置: DATABASE_URL=file:./prisma/dev.db
 
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
