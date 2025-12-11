@@ -48,7 +48,7 @@ JWT_SECRET=your-secret-key-here
 # 数据库连接（开发环境使用 SQLite）
 DATABASE_URL=file:./prisma/dev.db
 
-# ModelScope API Key（可选，AI 功能已禁用）
+# ModelScope API Key（可选，AI 功能暂未实现）
 MODELSCOPE_API_KEY=
 ```
 
@@ -199,6 +199,8 @@ npm run prisma:migrate
 - ⏳ 笔记导出（PDF、Markdown）
 - ⏳ 笔记分享链接
 - ⏳ 全文搜索优化
+- ⏳ 线上真实部署
+- ⏳ 融合AI
 
 ## 🔧 常见问题
 
@@ -216,14 +218,5 @@ npm run prisma:migrate
 - 检查 `DATABASE_URL` 是否正确
 - 删除 `prisma/dev.db` 后重新运行迁移
 
-## 🤝 贡献
-
-欢迎提交 Issue 和 Pull Request！
-
-## 📄 许可证
-
-MIT License
-
----
 
 **享受记录知识的乐趣！** 📚✨
